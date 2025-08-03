@@ -39,7 +39,27 @@ class EmailService {
 
   generateNewQuestionEmail(question) {
     const questionUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/${question.category}/${question.slug}`;
-    const choicesText = question.choices.map((choice, index) => `${index + 1}. ${choice.text}`).join('\n');
+    const isMultipleChoice = question.questionType === 'multiple_choice';
+    
+    // Generate choices section only for multiple choice questions
+    const choicesSection = isMultipleChoice ? `
+      <div class="choices-section">
+        <h3>Your options:</h3>
+        <div class="choices">
+          ${question.choices.map((choice, index) => 
+            `<div class="choice">${choice.text}</div>`
+          ).join('')}
+        </div>
+      </div>
+    ` : `
+      <div class="open-response-section">
+        <p class="response-type">📝 <strong>Open Response</strong> - Share your thoughts and reasoning</p>
+      </div>
+    `;
+
+    const choicesText = isMultipleChoice 
+      ? question.choices.map((choice, index) => `${index + 1}. ${choice.text}`).join('\n')
+      : 'This is an open response question - share your thoughts and reasoning.';
 
     return {
       subject: `New Moral Dilemma: ${question.title}`,
@@ -51,52 +71,178 @@ class EmailService {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>New Moral Dilemma</title>
           <style>
-            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
-            .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-            .content { padding: 30px; }
-            .question-text { background-color: #f8f9fa; padding: 20px; border-left: 4px solid #667eea; margin: 20px 0; font-style: italic; }
-            .choices { margin: 20px 0; }
-            .choice { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 5px; }
-            .cta-button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; padding: 15px 30px; border-radius: 5px; margin: 20px 0; }
-            .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
-            .unsubscribe { color: #999; text-decoration: none; }
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+              line-height: 1.6; 
+              color: #1a1a1a; 
+              background-color: #f8f9fa; 
+            }
+            .container { 
+              max-width: 560px; 
+              margin: 40px auto; 
+              background-color: #ffffff; 
+              border-radius: 12px; 
+              overflow: hidden;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+            .header { 
+              background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+              color: white; 
+              padding: 32px 24px; 
+              text-align: center; 
+            }
+            .header h1 { 
+              font-size: 24px; 
+              font-weight: 600; 
+              margin-bottom: 8px; 
+            }
+            .header p { 
+              opacity: 0.9; 
+              font-size: 15px; 
+            }
+            .content { 
+              padding: 32px 24px; 
+            }
+            .question-title { 
+              font-size: 20px; 
+              font-weight: 600; 
+              color: #1a1a1a; 
+              margin-bottom: 16px; 
+              line-height: 1.4; 
+            }
+            .question-meta { 
+              background-color: #f1f5f9; 
+              padding: 12px 16px; 
+              border-radius: 8px; 
+              margin-bottom: 24px; 
+              font-size: 14px; 
+            }
+            .question-text { 
+              background-color: #f8fafc; 
+              padding: 24px; 
+              border-left: 4px solid #2563eb; 
+              margin: 24px 0; 
+              font-size: 16px; 
+              line-height: 1.7; 
+              border-radius: 0 8px 8px 0; 
+            }
+            .choices-section h3, .open-response-section .response-type { 
+              font-size: 16px; 
+              font-weight: 600; 
+              margin-bottom: 16px; 
+              color: #374151; 
+            }
+            .choices { 
+              display: flex; 
+              flex-direction: column; 
+              gap: 12px; 
+            }
+            .choice { 
+              background-color: #f9fafb; 
+              padding: 16px; 
+              border-radius: 8px; 
+              border: 1px solid #e5e7eb; 
+              font-size: 15px; 
+            }
+            .open-response-section { 
+              background-color: #fef3c7; 
+              padding: 20px; 
+              border-radius: 8px; 
+              margin: 20px 0; 
+              border-left: 4px solid #f59e0b; 
+            }
+            .response-type { 
+              margin: 0 !important; 
+              color: #92400e; 
+            }
+            .cta-section { 
+              text-align: center; 
+              margin: 32px 0; 
+            }
+            .cta-button { 
+              display: inline-block; 
+              background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+              color: white; 
+              text-decoration: none; 
+              padding: 16px 32px; 
+              border-radius: 8px; 
+              font-weight: 600; 
+              font-size: 15px; 
+              transition: transform 0.2s; 
+            }
+            .cta-text { 
+              margin-top: 16px; 
+              font-size: 14px; 
+              color: #6b7280; 
+            }
+            .footer { 
+              background-color: #f9fafb; 
+              padding: 24px; 
+              text-align: center; 
+              border-top: 1px solid #e5e7eb; 
+            }
+            .footer p { 
+              font-size: 13px; 
+              color: #6b7280; 
+              margin-bottom: 8px; 
+            }
+            .unsubscribe { 
+              color: #9ca3af; 
+              text-decoration: none; 
+              font-size: 12px; 
+            }
+            .unsubscribe:hover { 
+              color: #6b7280; 
+            }
+            @media (max-width: 600px) {
+              .container { 
+                margin: 20px; 
+                border-radius: 8px; 
+              }
+              .content { 
+                padding: 24px 20px; 
+              }
+              .header { 
+                padding: 24px 20px; 
+              }
+            }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
               <h1>🤔 New Moral Dilemma</h1>
-              <p>A thought-provoking question awaits your consideration</p>
+              <p>A thought-provoking question awaits</p>
             </div>
             
             <div class="content">
-              <h2>${question.title}</h2>
-              <p><strong>Category:</strong> ${question.category.charAt(0).toUpperCase() + question.category.slice(1)}</p>
+              <h2 class="question-title">${question.title}</h2>
+              
+              <div class="question-meta">
+                <strong>Category:</strong> ${question.category.charAt(0).toUpperCase() + question.category.slice(1)} • 
+                <strong>Type:</strong> ${isMultipleChoice ? 'Multiple Choice' : 'Open Response'}
+              </div>
               
               <div class="question-text">
                 ${question.questionText}
               </div>
               
-              <h3>Your choices:</h3>
-              <div class="choices">
-                ${question.choices.map((choice, index) => 
-                  `<div class="choice">${index + 1}. ${choice.text}</div>`
-                ).join('')}
-              </div>
+              ${choicesSection}
               
-              <div style="text-align: center;">
+              <div class="cta-section">
                 <a href="${questionUrl}" class="cta-button">
-                  Share Your Perspective →
+                  ${isMultipleChoice ? 'Cast Your Vote' : 'Share Your Response'} →
                 </a>
+                <div class="cta-text">
+                  ${isMultipleChoice ? 'Choose your answer and explain your reasoning' : 'Share your thoughts and perspective on this dilemma'}
+                </div>
               </div>
-              
-              <p>What would you choose? Click the link above to cast your vote and share your reasoning with the community.</p>
             </div>
             
             <div class="footer">
-              <p>You're receiving this because you subscribed to our moral dilemma newsletter.</p>
-              <p><a href="{{unsubscribe_url}}" class="unsubscribe">Unsubscribe</a></p>
+              <p>You're receiving this because you subscribed to Moral Dilemmas</p>
+              <a href="{{unsubscribe_url}}" class="unsubscribe">Unsubscribe</a>
             </div>
           </div>
         </body>
@@ -106,16 +252,17 @@ class EmailService {
 New Moral Dilemma: ${question.title}
 
 Category: ${question.category.charAt(0).toUpperCase() + question.category.slice(1)}
+Type: ${isMultipleChoice ? 'Multiple Choice' : 'Open Response'}
 
 ${question.questionText}
 
-Your choices:
+${isMultipleChoice ? 'Your choices:' : 'Response Type:'}
 ${choicesText}
 
-What would you choose? Visit ${questionUrl} to share your perspective.
+${isMultipleChoice ? 'What would you choose?' : 'What are your thoughts?'} Visit ${questionUrl} to share your perspective.
 
 ---
-You're receiving this because you subscribed to our moral dilemma newsletter.
+You're receiving this because you subscribed to Moral Dilemmas.
 To unsubscribe, visit: {{unsubscribe_url}}
       `
     };
@@ -211,7 +358,7 @@ To unsubscribe, visit: {{unsubscribe_url}}
       await this.transporter.sendMail({
         from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
         to: subscriberEmail,
-        subject: 'Welcome to Moral Dilemmas - Explore the Gray Areas',
+        subject: 'Welcome to Moral Dilemmas',
         html: `
           <!DOCTYPE html>
           <html>
@@ -220,12 +367,115 @@ To unsubscribe, visit: {{unsubscribe_url}}
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Welcome to Moral Dilemmas</title>
             <style>
-              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
-              .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-              .content { padding: 30px; }
-              .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
-              .unsubscribe { color: #999; text-decoration: none; }
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                line-height: 1.6; 
+                color: #1a1a1a; 
+                background-color: #f8f9fa; 
+              }
+              .container { 
+                max-width: 560px; 
+                margin: 40px auto; 
+                background-color: #ffffff; 
+                border-radius: 12px; 
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+              }
+              .header { 
+                background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); 
+                color: white; 
+                padding: 32px 24px; 
+                text-align: center; 
+              }
+              .header h1 { 
+                font-size: 24px; 
+                font-weight: 600; 
+                margin-bottom: 8px; 
+              }
+              .header p { 
+                opacity: 0.9; 
+                font-size: 15px; 
+              }
+              .content { 
+                padding: 32px 24px; 
+              }
+              .welcome-title { 
+                font-size: 20px; 
+                font-weight: 600; 
+                color: #1a1a1a; 
+                margin-bottom: 16px; 
+              }
+              .welcome-text { 
+                font-size: 16px; 
+                margin-bottom: 24px; 
+                color: #374151; 
+              }
+              .features { 
+                background-color: #f8fafc; 
+                padding: 24px; 
+                border-radius: 8px; 
+                margin: 24px 0; 
+              }
+              .feature { 
+                display: flex; 
+                align-items: flex-start; 
+                margin-bottom: 16px; 
+                font-size: 15px; 
+              }
+              .feature:last-child { 
+                margin-bottom: 0; 
+              }
+              .feature-icon { 
+                margin-right: 12px; 
+                font-size: 16px; 
+                margin-top: 2px; 
+              }
+              .feature-text { 
+                flex: 1; 
+              }
+              .feature-text strong { 
+                color: #1a1a1a; 
+              }
+              .closing-text { 
+                background-color: #fef3c7; 
+                padding: 20px; 
+                border-radius: 8px; 
+                border-left: 4px solid #f59e0b; 
+                margin: 24px 0; 
+                font-size: 15px; 
+                color: #92400e; 
+              }
+              .footer { 
+                background-color: #f9fafb; 
+                padding: 24px; 
+                text-align: center; 
+                border-top: 1px solid #e5e7eb; 
+              }
+              .footer p { 
+                font-size: 13px; 
+                color: #6b7280; 
+              }
+              .unsubscribe { 
+                color: #9ca3af; 
+                text-decoration: none; 
+                font-size: 12px; 
+              }
+              .unsubscribe:hover { 
+                color: #6b7280; 
+              }
+              @media (max-width: 600px) {
+                .container { 
+                  margin: 20px; 
+                  border-radius: 8px; 
+                }
+                .content { 
+                  padding: 24px 20px; 
+                }
+                .header { 
+                  padding: 24px 20px; 
+                }
+              }
             </style>
           </head>
           <body>
@@ -236,24 +486,45 @@ To unsubscribe, visit: {{unsubscribe_url}}
               </div>
               
               <div class="content">
-                <h2>Thank you for subscribing!</h2>
-                <p>You've joined a community of thoughtful individuals who aren't afraid to wrestle with life's most challenging questions.</p>
+                <h2 class="welcome-title">Thank you for joining us!</h2>
+                <p class="welcome-text">
+                  You've joined a thoughtful community that explores life's most challenging ethical questions.
+                </p>
                 
-                <p>Here's what you can expect:</p>
-                <ul>
-                  <li><strong>📧 Weekly dilemmas</strong> delivered to your inbox</li>
-                  <li><strong>🤝 Community insights</strong> on how others approach tough choices</li>
-                  <li><strong>🧠 Thought-provoking scenarios</strong> across love, justice, family, and more</li>
-                  <li><strong>💭 Safe space</strong> to explore complex moral questions</li>
-                </ul>
+                <div class="features">
+                  <div class="feature">
+                    <span class="feature-icon">📧</span>
+                    <div class="feature-text">
+                      <strong>Weekly dilemmas</strong> delivered to your inbox
+                    </div>
+                  </div>
+                  <div class="feature">
+                    <span class="feature-icon">🤝</span>
+                    <div class="feature-text">
+                      <strong>Community insights</strong> on how others approach difficult choices
+                    </div>
+                  </div>
+                  <div class="feature">
+                    <span class="feature-icon">🧠</span>
+                    <div class="feature-text">
+                      <strong>Thought-provoking scenarios</strong> across love, justice, family, and more
+                    </div>
+                  </div>
+                  <div class="feature">
+                    <span class="feature-icon">💭</span>
+                    <div class="feature-text">
+                      <strong>Safe space</strong> to explore complex moral questions
+                    </div>
+                  </div>
+                </div>
                 
-                <p>Every dilemma is designed to challenge your thinking and help you understand different perspectives. There are no right or wrong answers—only honest reflection and meaningful dialogue.</p>
-                
-                <p>Ready to dive in? Visit our website to explore current dilemmas and share your thoughts with the community.</p>
+                <div class="closing-text">
+                  Every dilemma is designed to challenge your thinking and help you understand different perspectives. There are no right or wrong answers—only honest reflection and meaningful dialogue.
+                </div>
               </div>
               
               <div class="footer">
-                <p>You can <a href="${unsubscribeUrl}" class="unsubscribe">unsubscribe</a> at any time.</p>
+                <p>You can <a href="${unsubscribeUrl}" class="unsubscribe">unsubscribe</a> at any time</p>
               </div>
             </div>
           </body>
@@ -262,17 +533,15 @@ To unsubscribe, visit: {{unsubscribe_url}}
         text: `
 Welcome to Moral Dilemmas!
 
-Thank you for subscribing to our community of thoughtful individuals who explore life's challenging questions.
+Thank you for joining our thoughtful community that explores life's challenging ethical questions.
 
 Here's what you can expect:
-- Weekly dilemmas delivered to your inbox
-- Community insights on how others approach tough choices  
-- Thought-provoking scenarios across love, justice, family, and more
-- A safe space to explore complex moral questions
+• Weekly dilemmas delivered to your inbox
+• Community insights on how others approach difficult choices  
+• Thought-provoking scenarios across love, justice, family, and more
+• A safe space to explore complex moral questions
 
 Every dilemma is designed to challenge your thinking and help you understand different perspectives. There are no right or wrong answers—only honest reflection and meaningful dialogue.
-
-Ready to dive in? Visit our website to explore current dilemmas and share your thoughts.
 
 You can unsubscribe at any time: ${unsubscribeUrl}
         `
