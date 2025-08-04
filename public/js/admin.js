@@ -1,4 +1,4 @@
-// Admin panel functionality
+// Admin panel functionality - CSP compliant
 class AdminPanel {
     constructor() {
         this.loginScreen = document.getElementById('login-screen');
@@ -87,9 +87,8 @@ class AdminPanel {
     }
 
     checkAuthStatus() {
-        const storedSecret = sessionStorage.getItem('adminSecret');
-        if (storedSecret) {
-            this.adminSecret = storedSecret;
+        // Use in-memory storage instead of sessionStorage for CSP compliance
+        if (this.adminSecret) {
             this.showAdminPanel();
         }
     }
@@ -114,7 +113,7 @@ class AdminPanel {
 
             if (response.ok) {
                 this.adminSecret = secret;
-                sessionStorage.setItem('adminSecret', secret);
+                // Store in memory instead of sessionStorage
                 this.showAdminPanel();
                 loginError.textContent = '';
             } else {
@@ -129,7 +128,6 @@ class AdminPanel {
 
     logout() {
         this.adminSecret = null;
-        sessionStorage.removeItem('adminSecret');
         this.loginScreen.style.display = 'flex';
         this.adminPanel.style.display = 'none';
         document.getElementById('admin-secret').value = '';
@@ -211,14 +209,24 @@ class AdminPanel {
                 categoryStats.forEach(category => {
                     const categoryItem = document.createElement('div');
                     categoryItem.className = 'category-item';
-                    categoryItem.innerHTML = `
-                        <div class="category-name">${this.escapeHtml(category._id || 'Unknown')}</div>
-                        <div class="category-count">${category.count || 0} questions</div>
-                    `;
+                    
+                    const categoryName = document.createElement('div');
+                    categoryName.className = 'category-name';
+                    categoryName.textContent = category._id || 'Unknown';
+                    
+                    const categoryCount = document.createElement('div');
+                    categoryCount.className = 'category-count';
+                    categoryCount.textContent = `${category.count || 0} questions`;
+                    
+                    categoryItem.appendChild(categoryName);
+                    categoryItem.appendChild(categoryCount);
                     categoryStatsContainer.appendChild(categoryItem);
                 });
             } else {
-                categoryStatsContainer.innerHTML = '<div class="no-data">No category data available</div>';
+                const noData = document.createElement('div');
+                noData.className = 'no-data';
+                noData.textContent = 'No category data available';
+                categoryStatsContainer.appendChild(noData);
             }
         }
 
@@ -232,17 +240,28 @@ class AdminPanel {
                 questionTypeStats.forEach(typeStats => {
                     const typeItem = document.createElement('div');
                     typeItem.className = 'type-item';
+                    
                     const typeName = typeStats._id === 'multiple_choice' ? 'Multiple Choice' : 
                                    typeStats._id === 'paragraph' ? 'Paragraph' : 
                                    typeStats._id || 'Unknown';
-                    typeItem.innerHTML = `
-                        <div class="type-name">${typeName}</div>
-                        <div class="type-count">${typeStats.count || 0} questions</div>
-                    `;
+                    
+                    const typeNameDiv = document.createElement('div');
+                    typeNameDiv.className = 'type-name';
+                    typeNameDiv.textContent = typeName;
+                    
+                    const typeCountDiv = document.createElement('div');
+                    typeCountDiv.className = 'type-count';
+                    typeCountDiv.textContent = `${typeStats.count || 0} questions`;
+                    
+                    typeItem.appendChild(typeNameDiv);
+                    typeItem.appendChild(typeCountDiv);
                     questionTypeStatsContainer.appendChild(typeItem);
                 });
             } else {
-                questionTypeStatsContainer.innerHTML = '<div class="no-data">No question type data available</div>';
+                const noData = document.createElement('div');
+                noData.className = 'no-data';
+                noData.textContent = 'No question type data available';
+                questionTypeStatsContainer.appendChild(noData);
             }
         }
 
@@ -256,17 +275,26 @@ class AdminPanel {
                 recentQuestions.forEach(question => {
                     const questionItem = document.createElement('div');
                     questionItem.className = 'recent-question-item';
+                    
                     const questionType = question.questionType === 'paragraph' ? 'Paragraph' : 'Multiple Choice';
-                    questionItem.innerHTML = `
-                        <div class="recent-question-title">${this.escapeHtml(question.title || 'Untitled')}</div>
-                        <div class="recent-question-meta">
-                            ${question.category || 'Unknown'} • ${questionType} • ${question.responseCount || 0} responses • ${this.formatDate(new Date(question.createdAt))}
-                        </div>
-                    `;
+                    
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'recent-question-title';
+                    titleDiv.textContent = question.title || 'Untitled';
+                    
+                    const metaDiv = document.createElement('div');
+                    metaDiv.className = 'recent-question-meta';
+                    metaDiv.textContent = `${question.category || 'Unknown'} • ${questionType} • ${question.responseCount || 0} responses • ${this.formatDate(new Date(question.createdAt))}`;
+                    
+                    questionItem.appendChild(titleDiv);
+                    questionItem.appendChild(metaDiv);
                     recentQuestionsContainer.appendChild(questionItem);
                 });
             } else {
-                recentQuestionsContainer.innerHTML = '<div class="no-data">No recent questions</div>';
+                const noData = document.createElement('div');
+                noData.className = 'no-data';
+                noData.textContent = 'No recent questions';
+                recentQuestionsContainer.appendChild(noData);
             }
         }
     }
@@ -346,31 +374,82 @@ class AdminPanel {
         questions.forEach(question => {
             const questionItem = document.createElement('div');
             questionItem.className = 'question-item';
+            
+            // Create question info section
+            const questionInfo = document.createElement('div');
+            questionInfo.className = 'question-info';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'question-item-title';
+            titleDiv.textContent = question.title;
+            
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'question-item-meta';
+            
             const questionType = question.questionType === 'paragraph' ? 'Paragraph' : 'Multiple Choice';
-            questionItem.innerHTML = `
-                <div class="question-info">
-                    <div class="question-item-title">${this.escapeHtml(question.title)}</div>
-                    <div class="question-item-meta">
-                        <span>${question.category}</span>
-                        <span>${questionType}</span>
-                        <span>${question.responseCount} responses</span>
-                        <span>${this.formatDate(new Date(question.createdAt))}</span>
-                        ${question.featured ? '<span class="featured-badge">Featured</span>' : ''}
-                    </div>
-                </div>
-                <div class="question-actions">
-                    <button class="action-button ${question.featured ? 'featured' : ''}" 
-                            onclick="adminPanel.toggleFeatured('${question._id}', ${!question.featured})">
-                        ${question.featured ? 'Unfeature' : 'Feature'}
-                    </button>
-                    <button class="action-button" onclick="window.open('${question.url}', '_blank')">
-                        View
-                    </button>
-                    <button class="action-button delete" onclick="adminPanel.deleteQuestion('${question._id}')">
-                        Delete
-                    </button>
-                </div>
-            `;
+            
+            // Create individual meta spans
+            const categorySpan = document.createElement('span');
+            categorySpan.textContent = question.category;
+            
+            const typeSpan = document.createElement('span');
+            typeSpan.textContent = questionType;
+            
+            const responseSpan = document.createElement('span');
+            responseSpan.textContent = `${question.responseCount} responses`;
+            
+            const dateSpan = document.createElement('span');
+            dateSpan.textContent = this.formatDate(new Date(question.createdAt));
+            
+            metaDiv.appendChild(categorySpan);
+            metaDiv.appendChild(typeSpan);
+            metaDiv.appendChild(responseSpan);
+            metaDiv.appendChild(dateSpan);
+            
+            if (question.featured) {
+                const featuredBadge = document.createElement('span');
+                featuredBadge.className = 'featured-badge';
+                featuredBadge.textContent = 'Featured';
+                metaDiv.appendChild(featuredBadge);
+            }
+            
+            questionInfo.appendChild(titleDiv);
+            questionInfo.appendChild(metaDiv);
+            
+            // Create question actions section
+            const questionActions = document.createElement('div');
+            questionActions.className = 'question-actions';
+            
+            // Feature/Unfeature button
+            const featureButton = document.createElement('button');
+            featureButton.className = `action-button ${question.featured ? 'featured' : ''}`;
+            featureButton.textContent = question.featured ? 'Unfeature' : 'Feature';
+            featureButton.addEventListener('click', () => {
+                this.toggleFeatured(question._id, !question.featured);
+            });
+            
+            // View button
+            const viewButton = document.createElement('button');
+            viewButton.className = 'action-button';
+            viewButton.textContent = 'View';
+            viewButton.addEventListener('click', () => {
+                window.open(question.url, '_blank');
+            });
+            
+            // Delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'action-button delete';
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => {
+                this.deleteQuestion(question._id);
+            });
+            
+            questionActions.appendChild(featureButton);
+            questionActions.appendChild(viewButton);
+            questionActions.appendChild(deleteButton);
+            
+            questionItem.appendChild(questionInfo);
+            questionItem.appendChild(questionActions);
             questionsList.appendChild(questionItem);
         });
     }
@@ -384,7 +463,7 @@ class AdminPanel {
         prevButton.className = 'page-button';
         prevButton.textContent = '← Previous';
         prevButton.disabled = !pagination.hasPrev;
-        prevButton.onclick = () => this.loadQuestions(pagination.currentPage - 1);
+        prevButton.addEventListener('click', () => this.loadQuestions(pagination.currentPage - 1));
         paginationContainer.appendChild(prevButton);
 
         // Page info
@@ -399,7 +478,7 @@ class AdminPanel {
         nextButton.className = 'page-button';
         nextButton.textContent = 'Next →';
         nextButton.disabled = !pagination.hasNext;
-        nextButton.onclick = () => this.loadQuestions(pagination.currentPage + 1);
+        nextButton.addEventListener('click', () => this.loadQuestions(pagination.currentPage + 1));
         paginationContainer.appendChild(nextButton);
     }
 
@@ -499,24 +578,31 @@ class AdminPanel {
 
         const choiceInput = document.createElement('div');
         choiceInput.className = 'choice-input';
-        choiceInput.innerHTML = `
-            <input type="text" placeholder="Choice ${choiceInputs.length + 1}" required maxlength="500">
-            <button type="button" class="remove-choice">×</button>
-        `;
-
-        const removeButton = choiceInput.querySelector('.remove-choice');
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Choice ${choiceInputs.length + 1}`;
+        input.required = true;
+        input.maxLength = 500;
+        
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'remove-choice';
+        removeButton.textContent = '×';
         removeButton.addEventListener('click', () => {
             choiceInput.remove();
             this.updateRemoveButtons();
         });
 
+        choiceInput.appendChild(input);
+        choiceInput.appendChild(removeButton);
         choicesContainer.appendChild(choiceInput);
         this.updateRemoveButtons();
     }
 
     updateRemoveButtons() {
         const choiceInputs = document.querySelectorAll('#choices-container .choice-input');
-        choiceInputs.forEach((input, index) => {
+        choiceInputs.forEach((input) => {
             const removeButton = input.querySelector('.remove-choice');
             if (choiceInputs.length > 2) {
                 removeButton.style.display = 'flex';
@@ -528,24 +614,33 @@ class AdminPanel {
 
     resetChoices() {
         const choicesContainer = document.getElementById('choices-container');
-        choicesContainer.innerHTML = `
-            <div class="choice-input">
-                <input type="text" placeholder="Choice 1" required maxlength="500">
-                <button type="button" class="remove-choice" style="display: none;">×</button>
-            </div>
-            <div class="choice-input">
-                <input type="text" placeholder="Choice 2" required maxlength="500">
-                <button type="button" class="remove-choice" style="display: none;">×</button>
-            </div>
-        `;
+        choicesContainer.innerHTML = '';
         
-        // Re-attach event listeners
-        choicesContainer.querySelectorAll('.remove-choice').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.target.closest('.choice-input').remove();
+        // Create two default choice inputs
+        for (let i = 1; i <= 2; i++) {
+            const choiceInput = document.createElement('div');
+            choiceInput.className = 'choice-input';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = `Choice ${i}`;
+            input.required = true;
+            input.maxLength = 500;
+            
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'remove-choice';
+            removeButton.textContent = '×';
+            removeButton.style.display = 'none';
+            removeButton.addEventListener('click', () => {
+                choiceInput.remove();
                 this.updateRemoveButtons();
             });
-        });
+            
+            choiceInput.appendChild(input);
+            choiceInput.appendChild(removeButton);
+            choicesContainer.appendChild(choiceInput);
+        }
     }
 
     async toggleFeatured(questionId, featured) {
@@ -618,8 +713,13 @@ class AdminPanel {
             if (data.success) {
                 this.renderQuestions(data.data.questions);
                 // Hide pagination for search results
-                document.getElementById('questions-pagination').innerHTML = 
-                    `<span style="padding: 0.5rem; color: var(--text-secondary);">Found ${data.data.total} questions</span>`;
+                const paginationContainer = document.getElementById('questions-pagination');
+                paginationContainer.innerHTML = '';
+                const resultCount = document.createElement('span');
+                resultCount.style.padding = '0.5rem';
+                resultCount.style.color = 'var(--text-secondary)';
+                resultCount.textContent = `Found ${data.data.total} questions`;
+                paginationContainer.appendChild(resultCount);
             } else {
                 this.showNotification('Search failed', 'error');
             }
@@ -664,20 +764,43 @@ class AdminPanel {
         data.subscribers.forEach(subscriber => {
             const subscriberItem = document.createElement('div');
             subscriberItem.className = 'subscriber-item';
-            subscriberItem.innerHTML = `
-                <div class="subscriber-info">
-                    <div class="subscriber-email">${this.escapeHtml(subscriber.email)}</div>
-                    <div class="subscriber-meta">
-                        Subscribed: ${this.formatDate(new Date(subscriber.subscribedAt))}
-                        ${subscriber.isActive ? '<span class="status-active">Active</span>' : '<span class="status-inactive">Inactive</span>'}
-                    </div>
-                </div>
-                <div class="subscriber-actions">
-                    <button class="action-button" onclick="adminPanel.toggleSubscriberStatus('${subscriber._id}', ${!subscriber.isActive})">
-                        ${subscriber.isActive ? 'Deactivate' : 'Activate'}
-                    </button>
-                </div>
-            `;
+            
+            // Create subscriber info section
+            const subscriberInfo = document.createElement('div');
+            subscriberInfo.className = 'subscriber-info';
+            
+            const emailDiv = document.createElement('div');
+            emailDiv.className = 'subscriber-email';
+            emailDiv.textContent = subscriber.email;
+            
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'subscriber-meta';
+            metaDiv.textContent = `Subscribed: ${this.formatDate(new Date(subscriber.subscribedAt))}`;
+            
+            const statusSpan = document.createElement('span');
+            statusSpan.className = subscriber.isActive ? 'status-active' : 'status-inactive';
+            statusSpan.textContent = subscriber.isActive ? 'Active' : 'Inactive';
+            metaDiv.appendChild(document.createTextNode(' '));
+            metaDiv.appendChild(statusSpan);
+            
+            subscriberInfo.appendChild(emailDiv);
+            subscriberInfo.appendChild(metaDiv);
+            
+            // Create subscriber actions section
+            const subscriberActions = document.createElement('div');
+            subscriberActions.className = 'subscriber-actions';
+            
+            const toggleButton = document.createElement('button');
+            toggleButton.className = 'action-button';
+            toggleButton.textContent = subscriber.isActive ? 'Deactivate' : 'Activate';
+            toggleButton.addEventListener('click', () => {
+                this.toggleSubscriberStatus(subscriber._id, !subscriber.isActive);
+            });
+            
+            subscriberActions.appendChild(toggleButton);
+            
+            subscriberItem.appendChild(subscriberInfo);
+            subscriberItem.appendChild(subscriberActions);
             subscribersList.appendChild(subscriberItem);
         });
 
@@ -698,7 +821,7 @@ class AdminPanel {
         prevButton.className = 'page-button';
         prevButton.textContent = '← Previous';
         prevButton.disabled = !pagination.hasPrev;
-        prevButton.onclick = () => this.loadSubscriberStats(pagination.currentPage - 1);
+        prevButton.addEventListener('click', () => this.loadSubscriberStats(pagination.currentPage - 1));
         paginationContainer.appendChild(prevButton);
 
         // Page info
@@ -713,7 +836,7 @@ class AdminPanel {
         nextButton.className = 'page-button';
         nextButton.textContent = 'Next →';
         nextButton.disabled = !pagination.hasNext;
-        nextButton.onclick = () => this.loadSubscriberStats(pagination.currentPage + 1);
+        nextButton.addEventListener('click', () => this.loadSubscriberStats(pagination.currentPage + 1));
         paginationContainer.appendChild(nextButton);
     }
 
@@ -750,19 +873,22 @@ class AdminPanel {
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
-        notification.innerHTML = `
-            <span>${this.escapeHtml(message)}</span>
-            <button class="notification-close">×</button>
-        `;
-
-        // Add to document
-        document.body.appendChild(notification);
-
-        // Add close event listener
-        const closeButton = notification.querySelector('.notification-close');
+        
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = message;
+        
+        const closeButton = document.createElement('button');
+        closeButton.className = 'notification-close';
+        closeButton.textContent = '×';
         closeButton.addEventListener('click', () => {
             notification.remove();
         });
+        
+        notification.appendChild(messageSpan);
+        notification.appendChild(closeButton);
+
+        // Add to document
+        document.body.appendChild(notification);
 
         // Auto-remove after 5 seconds
         setTimeout(() => {

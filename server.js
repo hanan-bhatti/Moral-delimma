@@ -670,12 +670,14 @@ app.use(generalLimiter);
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-      process.env.FRONTEND_URL,
+      process.env.FRONTEND_URL,                       // from .env
+      'https://moral-dilemma.up.railway.app',         // production frontend
+      'http://localhost:3000',                        // local frontend for development
     ].filter(Boolean);
-    
-    // Allow requests with no origin (mobile apps, etc.)
+
+    // Allow requests with no origin (mobile apps, server-to-server, etc.)
     if (!origin) return callback(null, true);
-    
+
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -689,10 +691,11 @@ const corsOptions = {
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Session-ID', 'X-Requested-With'],
-  maxAge: 86400 // Cache preflight requests for 24 hours
+  maxAge: 86400, // Cache preflight requests for 24 hours
 };
 
 app.use(cors(corsOptions));
+
 
 // Body parsing middleware with enhanced security
 app.use(express.json({ 

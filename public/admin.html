@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Moral Dilemmas</title>
-    <link rel="stylesheet" href="/styles/main.css">
     <link rel="stylesheet" href="/styles/admin.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +14,7 @@
 <body class="admin-body">
     <div id="login-screen" class="login-screen">
         <div class="login-container">
-            <h1>🔐 Admin Access</h1>
+            <h1>Admin Access</h1>
             <form id="login-form" class="login-form">
                 <input type="password" id="admin-secret" placeholder="Enter admin secret" required class="login-input">
                 <button type="submit" class="login-button">Access Admin Panel</button>
@@ -206,6 +205,7 @@
                             <span class="button-text">Create Question</span>
                             <span class="button-loading" style="display: none;">
                                 <div class="spinner"></div>
+                                Creating...
                             </span>
                         </button>
                     </div>
@@ -218,7 +218,7 @@
                     <h2>Subscriber Management</h2>
                 </div>
 
-                <div class="subscriber-stats-grid">
+                <div class="dashboard-grid">
                     <div class="stat-card">
                         <h4>Total Subscribers</h4>
                         <div id="sub-total" class="stat-number">-</div>
@@ -247,9 +247,6 @@
             </div>
         </main>
     </div>
-
-    <div id="notification" class="notification"></div>
-
     <script src="/js/admin.js"></script>
 </body>
 
