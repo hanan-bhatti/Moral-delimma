@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category - Moral Dilemma Platform</title>
+  <meta name="description" content="Explore moral dilemmas by category and engage with thought-provoking questions.">
+  <meta name="theme-color" content="#2563eb">
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary: #64748b;
+      --accent: #f59e0b;
+      --background: #ffffff;
+      --surface: #f8fafc;
+      --surface-hover: #f1f5f9;
+      --border: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 8px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--background);
+      font-size: 14px;
+    }
+
+    /* Loading & Skeleton */
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top: 2px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: 4px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes loading {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    /* Header */
+    .header {
+      background: var(--background);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* Category Header */
+    .category-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .category-title {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .category-description {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .category-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    /* Search & Controls */
+    .search-section {
+      margin-bottom: 32px;
+    }
+
+    .search-container {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto 24px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 48px 0 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 16px;
+      background: var(--background);
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+    }
+
+    .search-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .select,
+    .button {
+      height: 40px;
+      padding: 0 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--background);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .select:hover,
+    .button:hover {
+      border-color: var(--primary);
+    }
+
+    .select:focus,
+    .button:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+    }
+
+    .button.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .button.primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .view-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .view-toggle button {
+      height: 40px;
+      padding: 0 16px;
+      border: none;
+      background: var(--background);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      border-right: 1px solid var(--border);
+    }
+
+    .view-toggle button:last-child {
+      border-right: none;
+    }
+
+    .view-toggle button.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Questions */
+    .questions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .question-card {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: var(--transition);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .question-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .question-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .question-type {
+      padding: 4px 8px;
+      background: var(--surface);
+      border-radius: 4px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .question-type.multiple_choice {
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--success);
+    }
+
+    .question-type.paragraph {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .question-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .question-text {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .question-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .question-stats {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .difficulty-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .difficulty-easy {
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--success);
+    }
+
+    .difficulty-medium {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .difficulty-hard {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+
+    /* Trending/Popular Sections */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .section-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 48px;
+    }
+
+    .pagination button {
+      height: 40px;
+      min-width: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      background: var(--background);
+      color: var(--text-secondary);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 14px;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .pagination button.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Empty & Error States */
+    .empty-state,
+    .error-state {
+      text-align: center;
+      padding: 64px 24px;
+    }
+
+    .empty-state i,
+    .error-state i {
+      font-size: 48px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3,
+    .error-state h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state p,
+    .error-state p {
+      color: var(--text-muted);
+    }
+
+    .error-state {
+      background: rgba(239, 68, 68, 0.05);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius);
+      color: var(--error);
+    }
+
+    /* Offline indicator */
+    .offline-indicator {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--error);
+      color: white;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+      z-index: 1000;
+    }
+
+    body.offline .offline-indicator {
+      display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav {
+        padding: 0 16px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .container {
+        padding: 24px 16px;
+      }
+
+      .category-title {
+        font-size: 32px;
+      }
+
+      .category-stats {
+        gap: 24px;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .questions-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .question-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Offline Indicator -->
+  <div class="offline-indicator">
+    <i class="fas fa-wifi"></i> You're offline
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <a href="/" class="logo">Moral Dilemma</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/categories">Categories</a></li>
+        <li><a href="/trending">Trending</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Category Header -->
+    <section class="category-header">
+      <h1 class="category-title" id="categoryTitle">Loading...</h1>
+      <p class="category-description" id="categoryDescription">
+        Explore thought-provoking moral dilemmas in this category.
+      </p>
+      <div class="category-stats" id="categoryStats">
+        <div class="stat-item">
+          <span class="stat-value skeleton" style="width: 60px; height: 32px;"></span>
+          <span class="stat-label">Questions</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value skeleton" style="width: 60px; height: 32px;"></span>
+          <span class="stat-label">Views</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value skeleton" style="width: 60px; height: 32px;"></span>
+          <span class="stat-label">Responses</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value skeleton" style="width: 60px; height: 32px;"></span>
+          <span class="stat-label">Rating</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search questions...">
+        <button class="search-btn" id="searchBtn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="controls">
+      <div class="filters">
+        <select class="select" id="sortBy">
+          <option value="popularity">Most Popular</option>
+          <option value="trending">Trending</option>
+          <option value="newest">Newest</option>
+          <option value="most_responses">Most Responses</option>
+        </select>
+        <select class="select" id="questionType">
+          <option value="all">All Types</option>
+          <option value="multiple_choice">Multiple Choice</option>
+          <option value="paragraph">Open Ended</option>
+        </select>
+        <select class="select" id="featuredFilter">
+          <option value="all">All Questions</option>
+          <option value="true">Featured Only</option>
+        </select>
+        <button class="button" id="refreshBtn">
+          <i class="fas fa-refresh"></i> Refresh
+        </button>
+      </div>
+      <div class="view-toggle">
+        <button class="active" id="gridView" data-view="grid">
+          <i class="fas fa-th"></i>
+        </button>
+        <button id="listView" data-view="list">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </section>
+    <!-- Main Questions -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">All Questions</h2>
+      </div>
+      <div class="questions-grid" id="questionsContainer">
+        <!-- Questions will be loaded here -->
+      </div>
+    </section>
+    <!-- Trending Questions -->
+    <section class="section" id="trendingSection" style="display: none;">
+      <div class="section-header">
+        <h2 class="section-title">🔥 Trending Now</h2>
+        <a href="/trending" class="section-link">View All</a>
+      </div>
+      <div class="questions-grid" id="trendingQuestions"></div>
+    </section>
+
+    <!-- Popular Questions -->
+    <section class="section" id="popularSection" style="display: none;">
+      <div class="section-header">
+        <h2 class="section-title">⭐ Most Popular</h2>
+        <a href="/popular" class="section-link">View All</a>
+      </div>
+      <div class="questions-grid" id="popularQuestions"></div>
+    </section>
+
+    <!-- Pagination -->
+    <nav class="pagination" id="pagination"></nav>
+  </main>
+
+  <script>
+    class MoralDilemmaAPI {
+      constructor() {
+        this.baseURL = '';
+        this.cache = new Map();
+        this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
+      }
+
+      async request(endpoint, options = {}) {
+        const cacheKey = `${endpoint}${JSON.stringify(options)}`;
+        const cached = this.cache.get(cacheKey);
+
+        if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+          return cached.data;
+        }
+
+        try {
+          const response = await fetch(`${this.baseURL}/api${endpoint}`, options);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          this.cache.set(cacheKey, { data, timestamp: Date.now() });
+          return data;
+        } catch (error) {
+          console.error(`API Error for ${endpoint}:`, error);
+          throw error;
+        }
+      }
+
+      // Questions endpoints
+      async getLatestQuestions(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/questions${query ? '?' + query : ''}`);
+      }
+
+      async getCategories(includeStats = false) {
+        return this.request(`/questions/categories${includeStats ? '?includeStats=true' : ''}`);
+      }
+
+      async getCategoryQuestions(category, params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/questions/category/${category}${query ? '?' + query : ''}`);
+      }
+
+      async getQuestion(category, slug) {
+        return this.request(`/questions/${category}/${slug}`);
+      }
+
+      async getTrendingQuestions(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/questions/trending${query ? '?' + query : ''}`);
+      }
+
+      async getPopularQuestions(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/questions/popular${query ? '?' + query : ''}`);
+      }
+
+      async getStats() {
+        return this.request('/questions/stats');
+      }
+
+      async searchQuestions(query, params = {}) {
+        const searchParams = new URLSearchParams({ q: query, ...params }).toString();
+        return this.request(`/questions/search?${searchParams}`);
+      }
+
+      async addResponse(category, slug, response) {
+        return this.request(`/questions/${category}/${slug}/respond`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(response)
+        });
+      }
+
+      async getResponses(category, slug, params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/questions/${category}/${slug}/responses${query ? '?' + query : ''}`);
+      }
+
+      async updateMetrics(data) {
+        return this.request('/questions/update-metrics', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      }
+
+      clearCache() {
+        this.cache.clear();
+      }
+    }
+
+    class CategoryPage {
+      constructor() {
+        this.api = new MoralDilemmaAPI();
+        this.currentCategory = this.getCategoryFromURL();
+        this.currentPage = 1;
+        this.currentView = 'grid';
+        this.searchQuery = '';
+        this.searchTimeout = null;
+        this.filters = {
+          sortBy: 'popularity',
+          questionType: 'all',
+          featured: 'all'
+        };
+        this.isLoading = false;
+
+        this.init();
+      }
+
+      getCategoryFromURL() {
+        const path = window.location.pathname;
+        const matches = path.match(/\/category\/(.+)/);
+        return matches ? decodeURIComponent(matches[1]) : null;
+      }
+
+      async init() {
+        if (!this.currentCategory) {
+          this.showError('Invalid category URL');
+          return;
+        }
+
+        this.setupEventListeners();
+        await this.loadInitialData();
+        this.updateURL();
+      }
+
+      setupEventListeners() {
+        // Search
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        searchInput.addEventListener('input', (e) => {
+          clearTimeout(this.searchTimeout);
+          this.searchTimeout = setTimeout(() => {
+            this.searchQuery = e.target.value.trim();
+            this.currentPage = 1;
+            this.loadQuestions();
+          }, 300);
+        });
+
+        searchBtn.addEventListener('click', () => {
+          this.searchQuery = searchInput.value.trim();
+          this.currentPage = 1;
+          this.loadQuestions();
+        });
+
+        // Filters
+        document.getElementById('sortBy').addEventListener('change', (e) => {
+          this.filters.sortBy = e.target.value;
+          this.currentPage = 1;
+          this.loadQuestions();
+          this.updateURL();
+        });
+
+        document.getElementById('questionType').addEventListener('change', (e) => {
+          this.filters.questionType = e.target.value;
+          this.currentPage = 1;
+          this.loadQuestions();
+          this.updateURL();
+        });
+
+        document.getElementById('featuredFilter').addEventListener('change', (e) => {
+          this.filters.featured = e.target.value;
+          this.currentPage = 1;
+          this.loadQuestions();
+          this.updateURL();
+        });
+
+        // Refresh
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+          this.refresh();
+        });
+
+        // View toggle
+        document.querySelectorAll('.view-toggle button').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const view = e.target.getAttribute('data-view');
+            this.switchView(view);
+          });
+        });
+
+        // URL state
+        window.addEventListener('popstate', () => {
+          this.loadStateFromURL();
+        });
+      }
+
+      async loadInitialData() {
+        try {
+          // Load category data, trending, and popular questions in parallel
+          const [categoryData, trendingData, popularData] = await Promise.all([
+            this.loadCategoryData(),
+            this.loadTrendingQuestions(),
+            this.loadPopularQuestions()
+          ]);
+
+          // Load main questions
+          await this.loadQuestions();
+
+        } catch (error) {
+          console.error('Error loading initial data:', error);
+          this.showError('Failed to load page data');
+        }
+      }
+
+      async loadCategoryData() {
+        try {
+          const response = await this.api.getCategories(true);
+          if (response.success) {
+            const categoryData = response.data.find(cat =>
+              cat.name.toLowerCase() === this.currentCategory.toLowerCase()
+            );
+
+            if (categoryData) {
+              this.updateCategoryHeader(categoryData);
+              return categoryData;
+            }
+          }
+        } catch (error) {
+          console.error('Error loading category data:', error);
+        }
+
+        // Fallback if API fails
+        document.getElementById('categoryTitle').textContent = this.formatCategoryName(this.currentCategory);
+        return null;
+      }
+
+      async loadTrendingQuestions() {
+        try {
+          const response = await this.api.getTrendingQuestions({ limit: 3 });
+          if (response.success && response.data.length > 0) {
+            document.getElementById('trendingSection').style.display = 'block';
+            this.renderQuestions(response.data, 'trendingQuestions');
+            return response.data;
+          }
+        } catch (error) {
+          console.error('Error loading trending questions:', error);
+        }
+        return [];
+      }
+
+      async loadPopularQuestions() {
+        try {
+          const response = await this.api.getPopularQuestions({ limit: 3 });
+          if (response.success && response.data.length > 0) {
+            document.getElementById('popularSection').style.display = 'block';
+            this.renderQuestions(response.data, 'popularQuestions');
+            return response.data;
+          }
+        } catch (error) {
+          console.error('Error loading popular questions:', error);
+        }
+        return [];
+      }
+
+      async loadQuestions() {
+        if (this.isLoading) return;
+
+        this.isLoading = true;
+        this.showLoadingState();
+
+        try {
+          const params = {
+            page: this.currentPage,
+            limit: 20,
+            sortBy: this.filters.sortBy,
+            ...(this.filters.questionType !== 'all' && { type: this.filters.questionType }),
+            ...(this.filters.featured !== 'all' && { featured: this.filters.featured })
+          };
+
+          let response;
+          if (this.searchQuery) {
+            response = await this.api.searchQuestions(this.searchQuery, params);
+          } else {
+            response = await this.api.getCategoryQuestions(this.currentCategory, params);
+          }
+
+          if (response.success) {
+            this.renderQuestions(response.data.questions || response.data, 'questionsContainer');
+            this.renderPagination(response.data.pagination);
+
+            if (response.data.categoryStats) {
+              this.updateCategoryStats(response.data.categoryStats);
+            }
+          } else {
+            this.showError(response.error || 'Failed to load questions');
+          }
+        } catch (error) {
+          console.error('Error loading questions:', error);
+          this.showError('Failed to load questions. Please check your connection.');
+        } finally {
+          this.isLoading = false;
+        }
+      }
+
+      updateCategoryHeader(categoryData) {
+        const title = document.getElementById('categoryTitle');
+        const description = document.getElementById('categoryDescription');
+
+        title.textContent = this.formatCategoryName(this.currentCategory);
+
+        const descriptions = {
+          love: "Explore the complexities of love, relationships, and emotional bonds.",
+          justice: "Examine questions of fairness, law, and moral righteousness.",
+          survival: "Navigate life-or-death scenarios and survival instincts.",
+          family: "Consider the bonds, duties, and conflicts within families.",
+          freedom: "Debate liberty, autonomy, and the limits of freedom.",
+          sacrifice: "Weigh the costs and benefits of personal sacrifice.",
+          truth: "Grapple with honesty, deception, and the value of truth.",
+          loyalty: "Explore faithfulness, betrayal, and allegiance.",
+          revenge: "Consider justice, retribution, and forgiveness.",
+          power: "Examine authority, influence, and the use of power.",
+          ethics: "Dive deep into fundamental ethical principles and moral reasoning.",
+          society: "Explore moral issues affecting communities and social structures."
+        };
+
+        description.textContent = descriptions[this.currentCategory.toLowerCase()] ||
+          "Explore thought-provoking moral dilemmas in this category.";
+
+        if (categoryData.stats) {
+          this.updateCategoryStats(categoryData.stats);
+        }
+      }
+
+      updateCategoryStats(stats) {
+        const statsContainer = document.getElementById('categoryStats');
+        statsContainer.innerHTML = `
+                    <div class="stat-item">
+                        <span class="stat-value">${stats.totalQuestions || 0}</span>
+                        <span class="stat-label">Questions</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${this.formatNumber(stats.totalViews || 0)}</span>
+                        <span class="stat-label">Views</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${this.formatNumber(stats.totalResponses || 0)}</span>
+                        <span class="stat-label">Responses</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${(stats.avgPopularityScore || 0).toFixed(1)}</span>
+                        <span class="stat-label">Rating</span>
+                    </div>
+                `;
+      }
+
+      renderQuestions(questions, containerId = 'questionsContainer') {
+        const container = document.getElementById(containerId);
+
+        if (!questions || questions.length === 0) {
+          if (containerId === 'questionsContainer') {
+            container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-search"></i>
+                                <h3>No questions found</h3>
+                                <p>${this.searchQuery ? 'Try a different search term' : 'Try adjusting your filters or check back later for new content.'}</p>
+                            </div>
+                        `;
+          }
+          return;
+        }
+
+        container.innerHTML = questions.map(question => this.createQuestionCard(question)).join('');
+
+        // Add click handlers and analytics
+        container.querySelectorAll('.question-card').forEach(card => {
+          card.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const href = card.getAttribute('href');
+            const questionId = card.dataset.questionId;
+
+            if (href && questionId) {
+              // Track view
+              this.trackQuestionView(questionId);
+
+              // Update metrics
+              try {
+                await this.api.updateMetrics({
+                  questionId,
+                  action: 'view',
+                  category: this.currentCategory
+                });
+              } catch (error) {
+                console.error('Failed to update view metrics:', error);
+              }
+
+              window.location.href = href;
+            }
+          });
+        });
+      }
+
+      createQuestionCard(question) {
+        const href = `/${question.category}/${question.slug}`;
+        const typeLabel = question.questionType === 'multiple_choice' ? 'Multiple Choice' : 'Open Ended';
+        const readTime = question.estimatedReadTime || Math.ceil(question.questionText.length / 200);
+
+        return `
+                    <a href="${href}" class="question-card" data-question-id="${question._id || question.id}">
+                        <div class="question-meta">
+                            <span class="question-type ${question.questionType}">${typeLabel}</span>
+                            <span><i class="fas fa-clock"></i> ${readTime} min</span>
+                            ${question.featured ? '<span><i class="fas fa-star"></i> Featured</span>' : ''}
+                            ${question.trending ? '<span><i class="fas fa-fire"></i> Trending</span>' : ''}
+                        </div>
+                        <h3 class="question-title">${this.escapeHtml(question.title)}</h3>
+                        <p class="question-text">${this.escapeHtml(question.questionText)}</p>
+                        <div class="question-footer">
+                            <div class="question-stats">
+                                <div class="stat">
+                                    <i class="fas fa-eye"></i>
+                                    <span>${this.formatNumber(question.popularityMetrics?.totalViews || question.views || 0)}</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-comments"></i>
+                                    <span>${this.formatNumber(question.popularityMetrics?.totalResponses || question.responses || 0)}</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    <span>${Math.round(question.popularityMetrics?.popularityScore || question.score || 0)}</span>
+                                </div>
+                            </div>
+                            <span class="difficulty-badge difficulty-${question.difficulty || 'medium'}">
+                                ${this.capitalizeFirst(question.difficulty || 'medium')}
+                            </span>
+                        </div>
+                    </a>
+                `;
+      }
+
+      renderPagination(pagination) {
+        const container = document.getElementById('pagination');
+
+        if (!pagination || pagination.totalPages <= 1) {
+          container.innerHTML = '';
+          return;
+        }
+
+        const { currentPage, totalPages, hasNextPage, hasPrevPage } = pagination;
+
+        let paginationHTML = `
+                    <button ${!hasPrevPage ? 'disabled' : ''} onclick="categoryPage.goToPage(${currentPage - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                `;
+
+        // Page numbers
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, currentPage + 2);
+
+        if (startPage > 1) {
+          paginationHTML += `<button onclick="categoryPage.goToPage(1)">1</button>`;
+          if (startPage > 2) {
+            paginationHTML += `<span style="padding: 0 8px;">...</span>`;
+          }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          paginationHTML += `
+                        <button ${i === currentPage ? 'class="active"' : ''} onclick="categoryPage.goToPage(${i})">
+                            ${i}
+                        </button>
+                    `;
+        }
+
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            paginationHTML += `<span style="padding: 0 8px;">...</span>`;
+          }
+          paginationHTML += `<button onclick="categoryPage.goToPage(${totalPages})">${totalPages}</button>`;
+        }
+
+        paginationHTML += `
+                    <button ${!hasNextPage ? 'disabled' : ''} onclick="categoryPage.goToPage(${currentPage + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                `;
+
+        container.innerHTML = paginationHTML;
+      }
+
+      goToPage(page) {
+        if (page >= 1 && page !== this.currentPage && !this.isLoading) {
+          this.currentPage = page;
+          this.loadQuestions();
+          this.updateURL();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+
+      switchView(view) {
+        if (view === this.currentView) return;
+
+        this.currentView = view;
+        const container = document.getElementById('questionsContainer');
+        const buttons = document.querySelectorAll('.view-toggle button');
+
+        // Update button states
+        buttons.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-view') === view);
+        });
+
+        // Update container class
+        container.className = view === 'list' ? 'questions-list' : 'questions-grid';
+
+        this.updateURL();
+      }
+
+      showLoadingState() {
+        const container = document.getElementById('questionsContainer');
+        const skeletonCards = Array(6).fill(0).map(() => `
+                    <div class="question-card" style="pointer-events: none;">
+                        <div class="question-meta">
+                            <span class="skeleton" style="width: 100px; height: 16px;"></span>
+                            <span class="skeleton" style="width: 80px; height: 16px;"></span>
+                        </div>
+                        <div class="skeleton" style="width: 90%; height: 22px; margin-bottom: 12px;"></div>
+                        <div class="skeleton" style="width: 100%; height: 48px; margin-bottom: 16px;"></div>
+                        <div class="question-footer">
+                            <div class="question-stats">
+                                <div class="skeleton" style="width: 40px; height: 16px;"></div>
+                                <div class="skeleton" style="width: 40px; height: 16px;"></div>
+                                <div class="skeleton" style="width: 40px; height: 16px;"></div>
+                            </div>
+                            <div class="skeleton" style="width: 60px; height: 20px;"></div>
+                        </div>
+                    </div>
+                `).join('');
+
+        container.innerHTML = skeletonCards;
+      }
+
+      showError(message) {
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error Loading Content</h3>
+                        <p>${this.escapeHtml(message)}</p>
+                        <button class="button primary" onclick="categoryPage.loadQuestions()" style="margin-top: 16px;">
+                            <i class="fas fa-refresh"></i> Try Again
+                        </button>
+                    </div>
+                `;
+      }
+
+      updateURL() {
+        const params = new URLSearchParams();
+
+        if (this.currentPage > 1) params.set('page', this.currentPage);
+        if (this.filters.sortBy !== 'popularity') params.set('sort', this.filters.sortBy);
+        if (this.filters.questionType !== 'all') params.set('type', this.filters.questionType);
+        if (this.filters.featured !== 'all') params.set('featured', this.filters.featured);
+        if (this.currentView !== 'grid') params.set('view', this.currentView);
+        if (this.searchQuery) params.set('q', this.searchQuery);
+
+        const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+        window.history.replaceState(null, '', newURL);
+      }
+
+      loadStateFromURL() {
+        const params = new URLSearchParams(window.location.search);
+
+        this.currentPage = parseInt(params.get('page')) || 1;
+        this.filters.sortBy = params.get('sort') || 'popularity';
+        this.filters.questionType = params.get('type') || 'all';
+        this.filters.featured = params.get('featured') || 'all';
+        this.currentView = params.get('view') || 'grid';
+        this.searchQuery = params.get('q') || '';
+
+        // Update UI elements
+        document.getElementById('sortBy').value = this.filters.sortBy;
+        document.getElementById('questionType').value = this.filters.questionType;
+        document.getElementById('featuredFilter').value = this.filters.featured;
+        document.getElementById('searchInput').value = this.searchQuery;
+
+        this.switchView(this.currentView);
+        this.loadQuestions();
+      }
+
+      trackQuestionView(questionId) {
+        // Analytics tracking
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'question_view', {
+            question_id: questionId,
+            category: this.currentCategory,
+            search_query: this.searchQuery || null
+          });
+        }
+      }
+
+      async refresh() {
+        this.api.clearCache();
+        await this.loadInitialData();
+      }
+
+      // Utility functions
+      formatCategoryName(category) {
+        return category.split('-').map(word =>
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+      }
+
+      formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toString();
+      }
+
+      capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    }
+
+    // Performance and offline handling
+    class AppEnhancer {
+      constructor() {
+        this.setupServiceWorker();
+        this.setupOfflineHandling();
+        this.setupPerformanceOptimizations();
+        this.setupErrorHandling();
+      }
+
+      setupServiceWorker() {
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+              .then(registration => console.log('SW registered'))
+              .catch(error => console.log('SW registration failed'));
+          });
+        }
+      }
+
+      setupOfflineHandling() {
+        window.addEventListener('online', () => {
+          document.body.classList.remove('offline');
+          if (window.categoryPage) {
+            categoryPage.refresh();
+          }
+        });
+
+        window.addEventListener('offline', () => {
+          document.body.classList.add('offline');
+        });
+      }
+
+      setupPerformanceOptimizations() {
+        // Lazy loading for images
+        if ('IntersectionObserver' in window) {
+          const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                imageObserver.unobserve(img);
+              }
+            });
+          });
+
+          document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+          });
+        }
+
+        // Preload critical resources
+        const preloadLinks = [
+          { href: '/api/questions/categories?includeStats=true', as: 'fetch' },
+          { href: '/api/questions/trending?limit=3', as: 'fetch' },
+          { href: '/api/questions/popular?limit=3', as: 'fetch' }
+        ];
+
+        preloadLinks.forEach(({ href, as }) => {
+          const link = document.createElement('link');
+          link.rel = 'prefetch';
+          link.href = href;
+          link.as = as;
+          document.head.appendChild(link);
+        });
+      }
+
+      setupErrorHandling() {
+        window.addEventListener('error', (event) => {
+          console.error('Global error:', event.error);
+          this.reportError(event.error);
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+          console.error('Unhandled promise rejection:', event.reason);
+          this.reportError(event.reason);
+        });
+      }
+
+      reportError(error) {
+        // Send to error tracking service
+        if (typeof Sentry !== 'undefined') {
+          Sentry.captureException(error);
+        }
+
+        // Log for development
+        if (window.location.hostname === 'localhost') {
+          console.error('Error reported:', error);
+        }
+      }
+    }
+
+    // Initialize application
+    let categoryPage;
+    let appEnhancer;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      categoryPage = new CategoryPage();
+      appEnhancer = new AppEnhancer();
+
+      // Expose for debugging in development
+      if (window.location.hostname === 'localhost') {
+        window.categoryPage = categoryPage;
+        window.appEnhancer = appEnhancer;
+      }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'k':
+            e.preventDefault();
+            document.getElementById('searchInput').focus();
+            break;
+          case 'r':
+            e.preventDefault();
+            if (categoryPage) categoryPage.refresh();
+            break;
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

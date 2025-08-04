@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moral Dilemmas - Explore Life's Gray Areas</title>
+    <meta name="description" content="Challenge your moral compass with thought-provoking dilemmas. No right answers, just honest reflection and meaningful dialogue.">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .categories-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px 0 rgba(102, 126, 234, 0.3);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin-top: 24px;
+        }
+        
+        .categories-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .categories-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px 0 rgba(102, 126, 234, 0.4);
+        }
+        
+        .categories-button:hover::before {
+            left: 100%;
+        }
+        
+        .categories-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 14px 0 rgba(102, 126, 234, 0.3);
+        }
+        
+        .categories-button-icon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .categories-button:hover .categories-button-icon {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .categories-button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>Loading moral dilemmas...</p>
+    </div>
+
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <h1>🤔 Moral Dilemmas</h1>
+                <p>Where ethics meet curiosity</p>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="hero-content">
+                <h2 class="hero-title">Life's most challenging questions don't have easy answers</h2>
+                <p class="hero-subtitle">
+                    Explore moral dilemmas that challenge your thinking, understand different perspectives, 
+                    and engage in meaningful dialogue with others navigating the same complex choices.
+                </p>
+                <a href="/categories" class="categories-button">
+                    <i class="fas fa-th-large categories-button-icon"></i>
+                    Browse Categories
+                </a>
+            </div>
+        </section>
+
+        <section class="featured-questions">
+            <div class="container">
+                <h3 class="section-title">Featured Dilemmas</h3>
+                <div id="questions-grid" class="questions-grid">
+                    <!-- Questions will be loaded here dynamically -->
+                </div>
+                
+                <div id="no-questions" class="no-questions" style="display: none;">
+                    <p>No questions available at the moment. Check back soon!</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="newsletter">
+            <div class="container">
+                <div class="newsletter-content">
+                    <h3>Never miss a moral dilemma</h3>
+                    <p>Get thought-provoking questions delivered to your inbox weekly. Join a community of curious minds exploring life's gray areas.</p>
+                    
+                    <form id="newsletter-form" class="newsletter-form">
+                        <div class="form-group">
+                            <input 
+                                type="email" 
+                                id="email-input" 
+                                placeholder="Enter your email address" 
+                                required
+                                class="newsletter-input"
+                            >
+                            <button type="submit" class="newsletter-button">
+                                <span class="button-text">Subscribe</span>
+                                <span class="button-loading" style="display: none;">
+                                    <div class="spinner"></div>
+                                </span>
+                            </button>
+                        </div>
+                        <div id="newsletter-message" class="newsletter-message"></div>
+                    </form>
+                    
+                    <p class="newsletter-disclaimer">
+                        We respect your privacy. Unsubscribe at any time. No spam, just meaningful questions.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Moral Dilemmas. A space for thoughtful reflection.</p>
+            <p>
+                <a href="/admin" class="footer-link">Admin</a> • 
+                <a href="/about" class="footer-link">About</a> •
+                <a href="mailto:hannanbhatti2006@gmail.com" class="footer-link">Contact</a> •
+                <a href="/admin/analytics" class="footer-link">Analytics</a> •
+                <a href="/api/docs" class="footer-link">Documentation</a> •
+                <a href="/health" class="footer-link">Health Check</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="/js/homepage.js"></script>
+</body>
+</html>
